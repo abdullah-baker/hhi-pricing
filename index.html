@@ -482,15 +482,6 @@
     .catch(() => alert(total));
 }
 
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2000);
-      })
-      .catch(() => alert(text));
-  }
-
   ['priceUSD','weightVal','customProfit'].forEach(id => {
     document.getElementById(id).addEventListener('input', calculate);
   });

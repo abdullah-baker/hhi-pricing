@@ -474,23 +474,22 @@
   function copyResult() {
     const price    = document.getElementById('priceUSD').value    || '—';
     const weight   = document.getElementById('weightVal').value   || '—';
-    const cpVal    = document.getElementById('customProfit').value;
-    const profit   = cpVal !== '' ? (parseFloat(cpVal) || 0) : 10000;
     const total    = document.getElementById('out-total').textContent;
-    const pkg      = document.getElementById('out-packaging').textContent;
     const shipping = document.getElementById('out-shipping').textContent;
     const fees     = document.getElementById('out-fees').textContent;
     const priceIQD = document.getElementById('out-priceIQD').textContent;
 
+    const cpVal2   = document.getElementById('customProfit').value;
+    const profitCopy = cpVal2 !== '' ? (parseFloat(cpVal2) || 0) : 10000;
     const text = [
       '🌿 Holistic Health Iraq — Product Pricing',
       '─────────────────────────',
       `Price   : $${price}  →  ${priceIQD}`,
-      `Weight  : ${weight} ${weightUnit}  →  ${pkg}`,
+      `Weight  : ${weight} ${weightUnit}`,
       `Fees 5% : ${fees}`,
       `Shipping: ${shipping}`,
       `Add Cost: 8,000 IQD`,
-      `Profit  : ${profit.toLocaleString('en-US')} IQD`,
+      `Profit  : ${profitCopy.toLocaleString('en-US')} IQD`,
       '─────────────────────────',
       `Selling Price: ${total}`,
     ].join('\n');

@@ -382,7 +382,7 @@
     <div>
       <div class="total-label">Selling Price</div>
       <div class="total-value" id="out-total">—</div>
-      <div class="total-usd" id="out-totalUSD"></div>
+      <div class="total-usd" id="out-margin"></div>
     </div>
     <div style="font-size:40px; opacity:0.2">🧾</div>
   </div>
@@ -452,12 +452,14 @@
     document.getElementById('out-profitDisplay').textContent = fmtIQD(profit);
 
     if (hasAny) {
-      document.getElementById('out-total').textContent   = fmtIQD(total);
-      document.getElementById('out-totalUSD').textContent = '≈ $' + (total / 1350).toFixed(2);
+      document.getElementById('out-total').textContent = fmtIQD(total);
+      const cost = total - profit;
+      const margin = cost > 0 ? ((profit / cost) * 100).toFixed(1) : '0.0';
+      document.getElementById('out-margin').textContent = 'Profit margin: ' + margin + '%';
       popEl('out-total');
     } else {
       document.getElementById('out-total').textContent    = '—';
-      document.getElementById('out-totalUSD').textContent = '';
+      document.getElementById('out-margin').textContent = '';
     }
   }
 

@@ -472,35 +472,14 @@
   }
 
   function copyResult() {
-    const price    = document.getElementById('priceUSD').value    || '—';
-    const weight   = document.getElementById('weightVal').value   || '—';
-    const total    = document.getElementById('out-total').textContent;
-    const shipping = document.getElementById('out-shipping').textContent;
-    const fees     = document.getElementById('out-fees').textContent;
-    const priceIQD = document.getElementById('out-priceIQD').textContent;
-
-    const cpVal2   = document.getElementById('customProfit').value;
-    const profitCopy = cpVal2 !== '' ? (parseFloat(cpVal2) || 0) : 10000;
-    const text = [
-      '🌿 Holistic Health Iraq — Product Pricing',
-      '─────────────────────────',
-      `Price   : $${price}  →  ${priceIQD}`,
-      `Weight  : ${weight} ${weightUnit}`,
-      `Fees 5% : ${fees}`,
-      `Shipping: ${shipping}`,
-      `Add Cost: 8,000 IQD`,
-      `Profit  : ${profitCopy.toLocaleString('en-US')} IQD`,
-      '─────────────────────────',
-      `Selling Price: ${total}`,
-    ].join('\n');
-
-    navigator.clipboard.writeText(text)
+    const total = document.getElementById('out-total').textContent.replace(' IQD','').trim();
+    navigator.clipboard.writeText(total)
       .then(() => {
         const t = document.getElementById('toast');
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 2000);
       })
-      .catch(() => alert(text));
+      .catch(() => alert(total));
   }
 
   ['priceUSD','weightVal','customProfit'].forEach(id => {

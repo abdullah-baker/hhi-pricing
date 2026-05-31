@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holistic Health Iraq — Pricing Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #2D5A27;
+    --green-light: #3d7a34;
+    --green-pale: #eaf3e8;
+    --green-border: #c5ddc2;
+    --text: #1a1a18;
+    --text-2: #555550;
+    --text-3: #888882;
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --border: #e2e0d8;
+    --border-2: #d0cec5;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .site-header {
+    background: var(--green);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .site-header .logo {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .site-header h1 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .site-header p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    margin-top: 2px;
+  }
+
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 12px;
+    animation: fadeUp 0.3s ease both;
+  }
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--green-border);
+    opacity: 0.5;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .field input[type="text"],
+  .field input[type="number"] {
+    width: 100%;
+    height: 44px;
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-sm);
+    padding: 0 14px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus {
+    border-color: var(--green);
+    background: #fff;
+  }
+  .field input::placeholder { color: var(--text-3); font-size: 14px; }
+
+  .input-prefix { position: relative; }
+  .input-prefix input { padding-left: 36px; }
+  .prefix-sym {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text-3);
+    pointer-events: none;
+  }
+
+  .weight-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .wtoggle {
+    flex: 1;
+    height: 44px;
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .wtoggle.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .bc {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .bc-label {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-bottom: 5px;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .bc-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .bc-val.green { color: var(--green); }
+  .bc-val.muted { color: var(--text-3); }
+
+  .profit-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .profit-row label {
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .profit-row input {
+    flex: 1;
+    height: 38px;
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-sm);
+    padding: 0 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .profit-row input:focus { border-color: var(--green); background: #fff; }
+  .profit-row span {
+    font-size: 12px;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+
+  .total-block {
+    background: var(--green);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    animation: fadeUp 0.3s ease 0.2s both;
+    overflow: hidden;
+    position: relative;
+  }
+  .total-block::before {
+    content: '🌿';
+    position: absolute;
+    right: -8px;
+    bottom: -14px;
+    font-size: 72px;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .total-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+  .total-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .total-usd {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Mono', monospace;
+    margin-top: 3px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    animation: fadeUp 0.3s ease 0.25s both;
+  }
+  .btn {
+    flex: 1;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-2);
+    background: var(--surface);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--bg); }
+  .btn:active { transform: scale(0.98); }
+  .btn.primary {
+    background: var(--green-pale);
+    border-color: var(--green-border);
+    color: var(--green);
+  }
+  .btn.primary:hover { background: var(--green-border); }
+
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text);
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2rem;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes numPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  .pop { animation: numPop 0.2s ease; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">🌿</div>
+  <div>
+    <h1>Holistic Health Iraq</h1>
+    <p>Product Pricing Calculator</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">Product</div>
+    <div class="field">
+    </div>
+    <div class="field">
+      <label>Price $</label>
+      <div class="input-prefix">
+        <span class="prefix-sym">$</span>
+        <input type="number" id="priceUSD" placeholder="0.00" min="0" step="0.01">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Weight</div>
+    <div class="weight-row">
+      <button class="wtoggle active" id="btnLB" onclick="setUnit('LB')">LB</button>
+      <button class="wtoggle" id="btnOZ" onclick="setUnit('OZ')">OZ</button>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label id="weightLabel">Weight (LB)</label>
+      <input type="number" id="weightVal" placeholder="0.000" min="0" step="0.001">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cost Breakdown</div>
+    <div class="breakdown">
+      <div class="bc">
+        <div class="bc-label">Price IQD</div>
+        <div class="bc-val muted" id="out-priceIQD">—</div>
+      </div>
+      <div class="bc">
+        <div class="bc-label" id="pkgLabel">Packaging (LB)</div>
+        <div class="bc-val muted" id="out-packaging">—</div>
+      </div>
+      <div class="bc">
+        <div class="bc-label">Fees 5%</div>
+        <div class="bc-val muted" id="out-fees">—</div>
+      </div>
+      <div class="bc">
+        <div class="bc-label">Additional Cost</div>
+        <div class="bc-val green">8,000 IQD</div>
+      </div>
+      <div class="bc">
+        <div class="bc-label">Shipping</div>
+        <div class="bc-val muted" id="out-shipping">—</div>
+      </div>
+      <div class="bc">
+        <div class="bc-label">Profit</div>
+        <div class="bc-val green" id="out-profitDisplay">10,000 IQD</div>
+      </div>
+    </div>
+    <div class="profit-row">
+      <label>Custom Profit:</label>
+      <input type="number" id="customProfit" placeholder="10000" min="0" step="500">
+      <span>IQD</span>
+    </div>
+  </div>
+
+  <div class="total-block">
+    <div>
+      <div class="total-label">Selling Price</div>
+      <div class="total-value" id="out-total">—</div>
+      <div class="total-usd" id="out-totalUSD"></div>
+    </div>
+    <div style="font-size:40px; opacity:0.2">🧾</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="resetAll()">↺ &nbsp;Reset</button>
+    <button class="btn primary" onclick="copyResult()">⎘ &nbsp;Copy Result</button>
+  </div>
+
+  <div class="footer">Holistic Health Iraq · Internal Pricing Tool</div>
+</div>
+
+<div class="toast" id="toast">Copied ✓</div>
+
+<script>
+  let weightUnit = 'LB';
+
+  function setUnit(u) {
+    weightUnit = u;
+    document.getElementById('btnLB').classList.toggle('active', u === 'LB');
+    document.getElementById('btnOZ').classList.toggle('active', u === 'OZ');
+    document.getElementById('weightLabel').textContent = 'Weight (' + u + ')';
+    document.getElementById('pkgLabel').textContent = 'Packaging (' + u + ')';
+    calculate();
+  }
+
+  function fmtIQD(n) {
+    return Math.round(n).toLocaleString('en-US') + ' IQD';
+  }
+
+  function popEl(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
+  }
+
+  function calculate() {
+    const priceUSD  = parseFloat(document.getElementById('priceUSD').value)  || 0;
+    const weightRaw = parseFloat(document.getElementById('weightVal').value)  || 0;
+    const cpVal     = document.getElementById('customProfit').value;
+    const profit    = cpVal !== '' ? (parseFloat(cpVal) || 0) : 10000;
+
+    const priceIQD  = priceUSD * 1350;
+    const weightLB  = weightUnit === 'LB' ? weightRaw : weightRaw / 16;
+    const packaging = (weightLB * 0.55) + weightLB;
+    const fees      = priceIQD * 0.05;
+    const shipping  = packaging * 13000;
+    const total     = priceIQD + fees + 8000 + shipping + profit;
+
+    const hasPrice  = priceUSD  > 0;
+    const hasWeight = weightRaw > 0;
+    const hasAny    = hasPrice || hasWeight;
+
+    const set = (id, val, active) => {
+      const el = document.getElementById(id);
+      el.textContent = val;
+      el.classList.toggle('muted', !active);
+      el.classList.toggle('green', active);
+    };
+
+    set('out-priceIQD',  hasPrice  ? fmtIQD(priceIQD) : '—', hasPrice);
+    set('out-packaging', hasWeight ? packaging.toFixed(4) + ' LB' : '—', hasWeight);
+    set('out-fees',      hasPrice  ? fmtIQD(fees)      : '—', hasPrice);
+    set('out-shipping',  hasWeight ? fmtIQD(shipping)  : '—', hasWeight);
+
+    document.getElementById('out-profitDisplay').textContent = fmtIQD(profit);
+
+    if (hasAny) {
+      document.getElementById('out-total').textContent   = fmtIQD(total);
+      document.getElementById('out-totalUSD').textContent = '≈ $' + (total / 1350).toFixed(2);
+      popEl('out-total');
+    } else {
+      document.getElementById('out-total').textContent    = '—';
+      document.getElementById('out-totalUSD').textContent = '';
+    }
+  }
+
+  function resetAll() {
+    ['priceUSD','weightVal','customProfit'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    setUnit('LB');
+    calculate();
+  }
+
+  function copyResult() {
+    const price    = document.getElementById('priceUSD').value    || '—';
+    const weight   = document.getElementById('weightVal').value   || '—';
+    const cpVal    = document.getElementById('customProfit').value;
+    const profit   = cpVal !== '' ? (parseFloat(cpVal) || 0) : 10000;
+    const total    = document.getElementById('out-total').textContent;
+    const pkg      = document.getElementById('out-packaging').textContent;
+    const shipping = document.getElementById('out-shipping').textContent;
+    const fees     = document.getElementById('out-fees').textContent;
+    const priceIQD = document.getElementById('out-priceIQD').textContent;
+
+    const text = [
+      '🌿 Holistic Health Iraq — Product Pricing',
+      '─────────────────────────',
+      `Price   : $${price}  →  ${priceIQD}`,
+      `Weight  : ${weight} ${weightUnit}  →  ${pkg}`,
+      `Fees 5% : ${fees}`,
+      `Shipping: ${shipping}`,
+      `Add Cost: 8,000 IQD`,
+      `Profit  : ${profit.toLocaleString('en-US')} IQD`,
+      '─────────────────────────',
+      `Selling Price: ${total}`,
+    ].join('\n');
+
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+      })
+      .catch(() => alert(text));
+  }
+
+  ['priceUSD','weightVal','customProfit'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+</script>
+</body>
+</html>
